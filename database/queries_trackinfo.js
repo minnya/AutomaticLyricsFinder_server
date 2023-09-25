@@ -1,8 +1,9 @@
+const Database = require('../database/database');
 
 class Queries_trackinfo{
 
-    constructor(database) {
-        this.database=database;
+    constructor(connection) {
+        this.connection=connection;
     }
 
     //trackInfoの情報を取得する(artist,title)
@@ -10,14 +11,14 @@ class Queries_trackinfo{
         let strSQL = `SELECT * FROM TrackInfo `;
         strSQL+=`WHERE artist_name = ? `;
         strSQL+=`AND track_name = ? `;
-        return this.database.doQuery(strSQL, [artist, title]);
+        return new Database(this.connection).doQuery(strSQL, [artist, title]);
     }
 
     //trackInfoの情報を取得する(id)
     async getTrackInfoById(track_info_id) {
         let strSQL = `SELECT * FROM TrackInfo `;
         strSQL+=`WHERE id = ? `;
-        return this.database.doQuery(strSQL, [track_info_id]);
+        return new Database(this.connection).doQuery(strSQL, [track_info_id]);
     }
 
     //APIから取得したTrackInfoの情報を挿入する
@@ -29,7 +30,7 @@ class Queries_trackinfo{
         strSQL+=`(SELECT * FROM TrackInfo `;
         strSQL+=`WHERE artist_name = ? `;
         strSQL+=`AND track_name = ? )`;
-        return this.database.doQuery(strSQL, [trackInfo.artist, trackInfo.title, trackInfo.songUrl, trackInfo.imageUrl, trackInfo.lyrics, trackInfo.artist, trackInfo.title]);
+        return new Database(this.connection).doQuery(strSQL, [trackInfo.artist, trackInfo.title, trackInfo.songUrl, trackInfo.imageUrl, trackInfo.lyrics, trackInfo.artist, trackInfo.title]);
     }
 }
 

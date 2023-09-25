@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
     const artist = req.query.artist || '';
     const title = req.query.title || '';
     const keyword=KeywordProvider.getKeyword(artist,title);
-
+    const connection = req.app.locals.connection;
 
     //Genius API
     const searchSongs=new SearchSongs();

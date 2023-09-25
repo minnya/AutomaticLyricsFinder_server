@@ -13,10 +13,10 @@ router.get('/', async (req, res) => {
     const artist = req.query.artist || '';
     const title = req.query.title || '';
     const keyword=KeywordProvider.getKeyword(artist,title);
-    console.log(keyword);
+    const connection = req.app.locals.connection;
 
     //データベースの情報を確認する
-    const databaseController=new DatabaseController();
+    const databaseController=new DatabaseController(connection);
     const resultFromDd = await databaseController.getLyrics(artist, title,keyword);
     if(resultFromDd!=null){
       console.log("データベースから歌詞を取得");

@@ -6,10 +6,9 @@ const Queries_trackinfo = require('./queries_trackinfo');
 class DatabaseController {
 
     //コンストラクタ
-    constructor() {
-        const database=new Database();
-        this.queries_tracksearch=new Queries_tracksearch(database);
-        this.queries_trackinfo=new Queries_trackinfo(database);
+    constructor(connection) {
+        this.queries_tracksearch=new Queries_tracksearch(connection);
+        this.queries_trackinfo=new Queries_trackinfo(connection);
     }
 
     //すでに歌詞がデータベースにあれば返す
