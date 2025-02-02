@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 import os
-from config.fastapi import UTF8JSONResponse
 from routers.lyrics_router import router as lyricsRouter
 from routers.search_router import router as searchRouter
 from database.manager import Base, engine
@@ -20,9 +19,6 @@ app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
 # Routes
 app.include_router(lyricsRouter, prefix="/search-lyrics")
 app.include_router(searchRouter, prefix="/search-songs")
-
-# カスタムレスポンスをデフォルトで設定
-app.default_response_class = UTF8JSONResponse
 
 if __name__ == "__main__":
     import uvicorn

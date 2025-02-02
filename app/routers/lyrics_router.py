@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Query, HTTPException
+from fastapi.responses import JSONResponse
 
 # 必要なインポート
 from models.track_info import TrackInfo
@@ -24,7 +25,8 @@ def get_lyrics(
     result_from_db = database_controller.get_lyrics(artist, title, keyword)
     if result_from_db:
         print("データベースから歌詞を取得")
-        return result_from_db
+        # 文字化けしないようにmedia_typeを設定する
+        return JSONResponse(content=result_from_db, media_type="application/json; charset=utf-8")
 
     # データベースにない場合はキーワードを基にAPIから曲情報を取得
     track_info: TrackInfo = search_song_genius_api(keyword)
@@ -47,7 +49,7 @@ def get_lyrics(
         )
 
     print("APIから歌詞を取得")
-    return {
+    response =  {
       "artist": track_info.artist_name,
       "title": track_info.track_name,
       "imageUrl": track_info.image_url,
@@ -55,3 +57,7 @@ def get_lyrics(
       "keyword": keyword,
       "lyrics": track_info.lyrics
     }
+    # 文字化けしないようにmedia_typeを設定する
+    return JSONResponse(content=response, media_type="application/json; charset=utf-8")
+
+    
