@@ -10,7 +10,6 @@ app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
 
-
 # Config
 app.timeout = 10  # Timeout in seconds
 
