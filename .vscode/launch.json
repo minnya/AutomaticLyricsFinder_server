@@ -8,14 +8,14 @@
         "module": "uvicorn",
         "args": [
           "main:app",
-          "--port","3020",
+          "--port","3010",
           "--reload"
         ],
         "cwd": "${workspaceFolder}/app",
         "jinja": true,
         "envFile": "${workspaceFolder}/.env",
         "env": {
-          "DATABASE_HOST": "localhost",
+          "MARIADB_HOST": "localhost",
       }
       }
     ]
