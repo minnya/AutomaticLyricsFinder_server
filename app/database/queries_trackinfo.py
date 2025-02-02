@@ -3,6 +3,7 @@ from sqlalchemy import insert, exists
 from sqlalchemy.orm import Session
 from models.track_info import TrackInfo  # TrackInfoモデルを使用
 from database.manager import session
+from sqlalchemy.exc import IntegrityError
 
 
 class QueriesTrackInfo:
@@ -34,14 +35,22 @@ class QueriesTrackInfo:
         exists_result = bool(trackinfos)
 
         if not exists_result:  # データが存在しない場合に挿入
-            new_track_info = TrackInfo(
-                artist_name=track_info.artist_name,
-                track_name=track_info.track_name,
-                song_url=track_info.song_url,
-                image_url=track_info.image_url,
-                lyrics=track_info.lyrics or "",  # lyricsがNoneの場合は空文字列
-            )
-            session.add(new_track_info)
-            session.commit()  # 挿入を確定
+            try:
+                new_track_info = TrackInfo(
+                    artist_name=track_info.artist_name,
+                    track_name=track_info.track_name,
+                    song_url=track_info.song_url,
+                    image_url=track_info.image_url,
+                    lyrics=track_info.lyrics or "",  # lyricsがNoneの場合は空文字列
+                )
+                session.add(new_track_info)
+                session.commit()  # 挿入を確定
+            except IntegrityError as e:
+                # 重複エラーの場合はスルー
+                if 'Duplicate entry' in str(e):
+                    session.rollback()  # トランザクションをロールバック
+                else :
+                    raise  # 他のエラーは再度発生させる
+
 
         return self.get_track_info(track_info.artist_name, track_info.track_name)

@@ -37,7 +37,7 @@ def search_song_genius_api(keyword: str) -> TrackInfo:
     song_list: list[GeniusApiModel] = search_songs_genius_api(keyword)
 
     if not song_list:
-        return {"message": "No songs found."}
+        return 
 
     # 類似度が最も高い曲を見つける
     highest_similarity_song = max(song_list, key=lambda song: song.similarity)
