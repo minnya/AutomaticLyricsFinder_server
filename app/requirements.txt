@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-dotenv
+databases
+sqlalchemy
+pydantic
+httpx
+asyncpg
+pytest
+aiohttp
+aiomysql
+bs4
+requests
