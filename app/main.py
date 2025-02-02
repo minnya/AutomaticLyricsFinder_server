@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 import os
-from routers.LyricsRouter import router as lyricsRouter
-from routers.SearchRouter import router as searchRouter
+from routers.lyrics_router import router as lyricsRouter
+from routers.search_router import router as searchRouter
 from database.manager import Base, engine
 
 

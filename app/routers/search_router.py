@@ -3,7 +3,7 @@ from typing import List
 from pydantic import BaseModel
 
 # 必要なインポート
-from controllers.genius_api import get_songs_from_genius_api
+from controllers.genius_api import search_songs_genius_api
 from utils.KeywordProvider import get_keyword
 
 router = APIRouter()
@@ -26,7 +26,7 @@ def get_song_list(
     keyword = get_keyword(artist, title)
 
     # Genius APIから曲リストを取得
-    song_info_list = get_songs_from_genius_api(keyword)
+    song_info_list = search_songs_genius_api(keyword)
 
     if not song_info_list:
         raise HTTPException(status_code=404, detail="No songs found.")

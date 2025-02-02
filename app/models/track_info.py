@@ -16,15 +16,15 @@ class TrackInfo(Base):
     def __repr__(self):
         return f"<TrackInfo(id={self.id}, artist_name={self.artist_name}, track_name={self.track_name})>"
 
-    def to_track_search(self,track_info_id: int, search_keyword: str = ""):
+    def to_track_search(self,track_info_id: int, search_keyword: str = "", artist_name: str="", track_name: str=""):
         """
         TrackInfo から TrackSearch を作成する
         :param search_keyword: 検索キーワード
         :return: TrackSearch オブジェクト
         """
         return TrackSearch(
-            artist_name=self.artist_name,
-            track_name=self.track_name,
+            artist_name=artist_name,
+            track_name=track_name,
             search_keyword=search_keyword,
             track_info_id=self.id
         )

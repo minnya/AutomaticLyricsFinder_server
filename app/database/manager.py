@@ -6,8 +6,8 @@ from sqlalchemy.ext.declarative import declarative_base
 
 # 環境変数から接続情報を取得してSQLAlchemyのエンジンを初期化
 engine = create_engine(
-    f"mysql+pymysql://{os.getenv('DATABASE_USER')}:{os.getenv('DATABASE_PASSWORD')}@"
-    f"{os.getenv('DATABASE_HOST')}/{os.getenv('DATABASE_NAME')}",
+    f"mysql+pymysql://{os.getenv('MARIADB_USER')}:{os.getenv('MARIADB_PASSWORD')}@"
+    f"{os.getenv('MARIADB_HOST')}/{os.getenv('MARIADB_DATABASE')}",
     echo=True,  # ログ出力を有効にする
 )
 # Sessionの作成

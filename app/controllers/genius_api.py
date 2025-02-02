@@ -30,11 +30,11 @@ def _request_api(keyword: str) -> list[GeniusApiModel]:
 
     return songs
 
-def get_songs_from_genius_api(keyword: str)-> list[GeniusApiModel]:
+def search_songs_genius_api(keyword: str)-> list[GeniusApiModel]:
     return _request_api(keyword)
 
-def get_song_from_genius_api(keyword: str) -> TrackInfo:
-    song_list: list[GeniusApiModel] = get_songs_from_genius_api(keyword)
+def search_song_genius_api(keyword: str) -> TrackInfo:
+    song_list: list[GeniusApiModel] = search_songs_genius_api(keyword)
 
     if not song_list:
         return {"message": "No songs found."}

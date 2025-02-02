@@ -1,12 +1,10 @@
-from fastapi import FastAPI, HTTPException
-import httpx
+import requests
 from bs4 import BeautifulSoup
+from fastapi import HTTPException
 
-
-async def get_lyrics_from_html(song_url: str) -> str:
-    # HTTPリクエスト
-    async with httpx.AsyncClient() as client:
-        response = await client.get(song_url)
+def get_lyrics_from_html(song_url: str) -> str:
+    # HTTPリクエスト（同期）
+    response = requests.get(song_url)
 
     # レスポンスが正常でない場合
     if response.status_code != 200:
@@ -36,6 +34,6 @@ async def get_lyrics_from_html(song_url: str) -> str:
         child.extract()
 
     # 最終的な歌詞を取得
-    lyrics = lyrics_container.get_text(strip=True)
+    lyrics = lyrics_container.get_text(strip=False)
 
     return lyrics
