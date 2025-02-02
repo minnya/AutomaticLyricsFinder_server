@@ -1,34 +1,31 @@
-version: '3.8'
-
 services:
   mysql:
     image: mariadb:10.3.39
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: minnya9018
-      MYSQL_DATABASE: AutomaticLyrics
-      MYSQL_CHARSET: utf8mb4
-      MYSQL_COLLATION: utf8mb4_unicode_ci
+    env_file:
+      - .env
+
     volumes:
       - ./mysql-data:/var/lib/mysql
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3306:3306"
-    restart: on-failure  # コンテナが停止しても自動で再起動する設定
+    restart: always
 
-  node:
-    image: node:14
-    container_name: node
-    volumes:
-      - ./node:/app
+  fastapi:
+    build:
+      context: app/
+      dockerfile: Dockerfile
     ports:
-      - 3010:3010
-    working_dir: /app
-    command: >
-      bash -c "npm install && npm run start"
+      - "3010:3010"
+    env_file:
+      - .env
+    volumes:
+      - ./app:/app
+    working_dir: /app 
     depends_on:
       - mysql
-    restart: on-failure
+    command: uvicorn main:app --host 0.0.0.0 --port 3010 --reload
+    restart: always
 
 # volumes:
 #   mysql-data:
