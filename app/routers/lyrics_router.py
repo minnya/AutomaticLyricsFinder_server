@@ -39,7 +39,7 @@ def get_lyrics(
 
     # データベースを更新
     track_info=database_controller.update_track_info(track_info)
-    database_controller.update_track_search(track_info.to_track_search(track_info_id=track_info.id,search_keyword=keyword, artist_name=artist, track_name=title))
+    database_controller.update_track_search(track_info.to_track_search(search_keyword=keyword, artist_name=artist, track_name=title))
 
     if not track_info.lyrics:
         raise HTTPException(

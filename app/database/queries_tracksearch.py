@@ -38,11 +38,7 @@ class QueriesTrackSearch:
             return None  # 既存レコードがある場合は挿入しない
 
         except IntegrityError as e:
-            # 重複エラーの場合はスルー
-            if 'Duplicate entry' in str(e):
-                return None
-            else:
-                raise
+            session.rollback()
 
     # artistとtrackが一致するものが存在する場合のみ更新する
     def update_track_search(self, artist, track, keyword, track_info_id):
@@ -63,8 +59,5 @@ class QueriesTrackSearch:
             return None  # 一致するレコードがなければ更新しない
 
         except IntegrityError as e:
-            if 'Duplicate entry' in str(e):
-                return None
-            else:
-                raise  # 他のエラーは再度発生させる
+            session.rollback()
 

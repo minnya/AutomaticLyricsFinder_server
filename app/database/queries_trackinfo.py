@@ -47,10 +47,7 @@ class QueriesTrackInfo:
                 session.commit()  # 挿入を確定
             except IntegrityError as e:
                 # 重複エラーの場合はスルー
-                if 'Duplicate entry' in str(e):
-                    session.rollback()  # トランザクションをロールバック
-                else :
-                    raise  # 他のエラーは再度発生させる
+                session.rollback()  # トランザクションをロールバック
 
 
         return self.get_track_info(track_info.artist_name, track_info.track_name)
