@@ -1,12 +1,13 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 import os
+from middleware.auth import authenticate
 from routers.lyrics_router import router as lyricsRouter
 from routers.search_router import router as searchRouter
 from database.manager import Base, engine
 
 
-app = FastAPI()
+app = FastAPI(dependencies=[Depends(authenticate)])
 
 Base.metadata.create_all(bind=engine)
 

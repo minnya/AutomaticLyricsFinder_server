@@ -26,7 +26,9 @@ def get_lyrics(
     if result_from_db:
         print("データベースから歌詞を取得")
         # 文字化けしないようにmedia_typeを設定する
-        return JSONResponse(content=result_from_db, media_type="application/json; charset=utf-8")
+        return JSONResponse(
+            content=result_from_db, media_type="application/json; charset=utf-8"
+        )
 
     # データベースにない場合はキーワードを基にAPIから曲情報を取得
     track_info: TrackInfo = search_song_genius_api(keyword)
@@ -38,8 +40,12 @@ def get_lyrics(
     track_info.lyrics = get_lyrics_from_html(track_info.song_url)
 
     # データベースを更新
-    track_info=database_controller.update_track_info(track_info)
-    database_controller.update_track_search(track_info.to_track_search(search_keyword=keyword, artist_name=artist, track_name=title))
+    track_info = database_controller.update_track_info(track_info)
+    database_controller.update_track_search(
+        track_info.to_track_search(
+            search_keyword=keyword, artist_name=artist, track_name=title
+        )
+    )
 
     if not track_info.lyrics:
         raise HTTPException(
@@ -49,15 +55,13 @@ def get_lyrics(
         )
 
     print("APIから歌詞を取得")
-    response =  {
-      "artist": track_info.artist_name,
-      "title": track_info.track_name,
-      "imageUrl": track_info.image_url,
-      "songUrl": track_info.song_url,
-      "keyword": keyword,
-      "lyrics": track_info.lyrics
+    response = {
+        "artist": track_info.artist_name,
+        "title": track_info.track_name,
+        "imageUrl": track_info.image_url,
+        "songUrl": track_info.song_url,
+        "keyword": keyword,
+        "lyrics": track_info.lyrics,
     }
     # 文字化けしないようにmedia_typeを設定する
     return JSONResponse(content=response, media_type="application/json; charset=utf-8")
-
-    
