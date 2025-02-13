@@ -1,19 +1,23 @@
 from sqlalchemy import select, insert, update
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session
+from database.manager import ScopedSession
 from models.track_search import TrackSearch  # TrackSearch モデルが必要
-from database.manager import session
 from sqlalchemy.exc import IntegrityError
 
 
 class QueriesTrackSearch:
+    def __init__(self):
+        self.session: Session = ScopedSession()
+
     # TrackSearchの情報を取得する
     def get_track_search(self, artist, track, keyword):
+
         query = select(TrackSearch).filter(
             TrackSearch.artist_name == artist,
             TrackSearch.track_name == track,
             TrackSearch.search_keyword == keyword,
         )
-        result = session.execute(query)
+        result = self.session.execute(query)
         return result.scalars().first()  # 最初の結果を返す
 
     # artistとtrackが一致するものが存在しない場合のみ挿入する
@@ -22,7 +26,7 @@ class QueriesTrackSearch:
             query = select(TrackSearch).filter(
                 TrackSearch.artist_name == artist, TrackSearch.track_name == track
             )
-            result = session.execute(query)
+            result = self.session.execute(query)
             existing_entry = result.scalars().first()
 
             if not existing_entry:
@@ -32,13 +36,13 @@ class QueriesTrackSearch:
                     search_keyword=keyword,
                     track_info_id=track_info_id,
                 )
-                session.add(new_entry)
-                session.commit()
+                self.session.add(new_entry)
+                self.session.commit()
                 return new_entry  # 挿入したレコードを返す
             return None  # 既存レコードがある場合は挿入しない
 
         except IntegrityError as e:
-            session.rollback()
+            self.session.rollback()
 
     # artistとtrackが一致するものが存在する場合のみ更新する
     def update_track_search(self, artist, track, keyword, track_info_id):
@@ -48,16 +52,15 @@ class QueriesTrackSearch:
                 TrackSearch.track_name == track,
                 TrackSearch.search_keyword != keyword,
             )
-            result = session.execute(query)
+            result = self.session.execute(query)
             existing_entry = result.scalars().first()
 
             if existing_entry:
                 existing_entry.search_keyword = keyword
                 existing_entry.track_info_id = track_info_id
-                session.commit()
+                self.session.commit()
                 return existing_entry  # 更新したレコードを返す
             return None  # 一致するレコードがなければ更新しない
 
         except IntegrityError as e:
-            session.rollback()
-
+            self.session.rollback()

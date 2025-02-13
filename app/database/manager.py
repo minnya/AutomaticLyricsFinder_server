@@ -11,7 +11,9 @@ engine = create_engine(
     pool_recycle=3600,  # 1時間ごとに接続をリサイクル
 )
 # Sessionの作成
-session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
+ScopedSession = scoped_session(
+    sessionmaker(autocommit=False, autoflush=False, bind=engine)
+)
 # modelで使用する
 Base = declarative_base()
-Base.query = session.query_property()
+Base.query = ScopedSession.query_property()
