@@ -8,6 +8,8 @@ from sqlalchemy.exc import IntegrityError
 class QueriesTrackSearch:
     def __init__(self):
         self.session: Session = ScopedSession()
+    def __del__(self):
+        self.session.close()
 
     # TrackSearchの情報を取得する
     def get_track_search(self, artist, track, keyword):

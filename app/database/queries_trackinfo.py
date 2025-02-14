@@ -9,6 +9,9 @@ from sqlalchemy.exc import IntegrityError
 class QueriesTrackInfo:
     def __init__(self):
         self.session: Session = ScopedSession()
+    
+    def __del__(self):
+        self.session.close()
 
     # TrackInfoの情報を取得する(artist, title)
     def get_track_info(self, artist: str, title: str) -> TrackInfo:
