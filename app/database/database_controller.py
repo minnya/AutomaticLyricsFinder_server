@@ -37,10 +37,12 @@ class DatabaseController:
             "lyrics": track_result.lyrics,
         }
 
-    def update_track_info(self, song_info: TrackInfo)->TrackInfo:
+    def update_track_info(self, song_info: TrackInfo) -> TrackInfo:
         # APIの情報をTrackInfoテーブルに挿入
-        inserted_track_info= self.queries_trackinfo.insert_track_info(song_info)
-        return inserted_track_info
+        self.queries_trackinfo.insert_track_info(song_info)
+        return self.queries_trackinfo.get_track_info(
+            song_info.artist_name, song_info.track_name
+        )
 
     def update_track_search(self, search_info: TrackSearch):
 

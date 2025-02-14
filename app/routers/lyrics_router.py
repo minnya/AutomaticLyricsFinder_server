@@ -2,6 +2,7 @@ from fastapi import APIRouter, Query, HTTPException
 from fastapi.responses import JSONResponse
 
 # 必要なインポート
+from models.track_search import TrackSearch
 from models.track_info import TrackInfo
 from database.database_controller import DatabaseController
 from controllers.html_parser import get_lyrics_from_html
@@ -13,7 +14,7 @@ router = APIRouter()
 
 
 @router.get("")
-def get_lyrics(
+def search_lyrics(
     artist: str = Query("", alias="artist"),
     title: str = Query("", alias="title"),
 ):
@@ -41,11 +42,12 @@ def get_lyrics(
 
     # データベースを更新
     track_info = database_controller.update_track_info(track_info)
-    database_controller.update_track_search(
-        track_info.to_track_search(
-            search_keyword=keyword, artist_name=artist, track_name=title
-        )
+    if not track_info:
+        raise HTTPException(status_code=404, detail="No songs found.")
+    track_search: TrackSearch = track_info.to_track_search(
+        search_keyword=keyword, artist_name=artist, track_name=title
     )
+    database_controller.update_track_search(track_search)
 
     if not track_info.lyrics:
         raise HTTPException(

@@ -52,5 +52,3 @@ class QueriesTrackInfo:
             )
             self.session.add(new_track_info)
             self.session.commit()  # 挿入を確定
-
-        return self.get_track_info(track_info.artist_name, track_info.track_name)

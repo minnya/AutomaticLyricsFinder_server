@@ -28,5 +28,6 @@ def handle_db_exceptions(func):
             return func(self, *args, **kwargs)
         except (PendingRollbackError, IntegrityError) as e:
             self.session.rollback()  # セッションをロールバック
+            print(e)
 
     return wrapper
