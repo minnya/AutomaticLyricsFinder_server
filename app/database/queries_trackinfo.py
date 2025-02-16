@@ -40,9 +40,11 @@ class QueriesTrackInfo:
             .all()
         )
 
-        exists_result = bool(trackinfos)
+        result_exists = bool(trackinfos)
 
-        if not exists_result:  # データが存在しない場合に挿入
+
+        # データが存在しない場合に挿入
+        if not result_exists:
             new_track_info = TrackInfo(
                 artist_name=track_info.artist_name,
                 track_name=track_info.track_name,
@@ -51,4 +53,22 @@ class QueriesTrackInfo:
                 lyrics=track_info.lyrics or "",  # lyricsがNoneの場合は空文字列
             )
             self.session.add(new_track_info)
-            self.session.commit()  # 挿入を確定
+            self.session.commit()
+    # APIから取得したTrackInfoの情報を挿入する
+    @handle_db_exceptions
+    def update_track_info(self, track_info: TrackInfo) -> TrackInfo:
+        trackinfo = (
+            self.session.query(TrackInfo)
+            .where(
+                TrackInfo.id == track_info.id
+            )
+            .one()
+        )
+        if not trackinfo:
+            return
+        trackinfo.artist_name = track_info.artist_name
+        trackinfo.track_name = track_info.track_name
+        trackinfo.lyrics = track_info.lyrics
+        trackinfo.image_url = track_info.image_url
+        self.session.commit()
+

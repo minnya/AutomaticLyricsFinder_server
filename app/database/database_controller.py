@@ -29,6 +29,7 @@ class DatabaseController:
 
         # 戻り値を作成して返す
         return {
+            "id": track_result.id,
             "artist": track_result.artist_name,
             "title": track_result.track_name,
             "imageUrl": track_result.image_url,
@@ -37,11 +38,17 @@ class DatabaseController:
             "lyrics": track_result.lyrics,
         }
 
-    def update_track_info(self, song_info: TrackInfo) -> TrackInfo:
+    def insert_track_info(self, song_info: TrackInfo) -> TrackInfo:
         # APIの情報をTrackInfoテーブルに挿入
         self.queries_trackinfo.insert_track_info(song_info)
         return self.queries_trackinfo.get_track_info(
             song_info.artist_name, song_info.track_name
+        )
+    def update_track_info(self, song_info: TrackInfo) -> TrackInfo:
+        # APIの情報をTrackInfoテーブルに更新
+        self.queries_trackinfo.update_track_info(song_info)
+        return self.queries_trackinfo.get_track_info_by_id(
+            song_info.id
         )
 
     def update_track_search(self, search_info: TrackSearch):

@@ -41,7 +41,7 @@ def search_lyrics(
     track_info.lyrics = get_lyrics_from_html(track_info.song_url)
 
     # データベースを更新
-    track_info = database_controller.update_track_info(track_info)
+    track_info = database_controller.insert_track_info(track_info)
     if not track_info:
         raise HTTPException(status_code=404, detail="No songs found.")
     track_search: TrackSearch = track_info.to_track_search(
@@ -58,6 +58,7 @@ def search_lyrics(
 
     print("APIから歌詞を取得")
     response = {
+        "id": track_info.id,
         "artist": track_info.artist_name,
         "title": track_info.track_name,
         "imageUrl": track_info.image_url,
@@ -65,5 +66,50 @@ def search_lyrics(
         "keyword": keyword,
         "lyrics": track_info.lyrics,
     }
+    # 文字化けしないようにmedia_typeを設定する
+    return JSONResponse(content=response, media_type="application/json; charset=utf-8")
+
+
+@router.get("/url")
+def get_lyrics_song_url(
+    id: int= Query(..., description="TrackInfo ID"),
+    artist: str = Query("", description="Artist Name"),
+    title: str = Query("", description="Title"),
+    image_url: str = Query("", description="Image Url"),
+    song_url: str = Query("", description="Song Url"),
+):
+    # 曲情報内のurlから歌詞を取得
+    lyrics = get_lyrics_from_html(song_url)
+
+    if not lyrics:
+        raise HTTPException(status_code=404, detail="Lyrics not found.")
+
+    # データベース処理
+    database_controller = DatabaseController()
+
+    # TrackInfo の作成・更新
+    track_info = TrackInfo(
+        id=id,
+        artist_name=artist,
+        track_name=title,
+        image_url=image_url,
+        song_url=song_url,
+        lyrics=lyrics,
+        # 必要な他のフィールドを追加
+    )
+    track_info = database_controller.update_track_info(track_info)
+    
+    if not track_info:
+        raise HTTPException(status_code=404, detail="Failed to update track info.")
+
+    # レスポンス
+    response = {
+        "id": track_info.id,
+        "artist": track_info.artist_name,
+        "title": track_info.track_name,
+        "imageUrl": track_info.image_url,
+        "lyrics": track_info.lyrics,
+    }
+
     # 文字化けしないようにmedia_typeを設定する
     return JSONResponse(content=response, media_type="application/json; charset=utf-8")

@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Query, HTTPException, Depends
 from typing import List
 from pydantic import BaseModel
+from fastapi.responses import JSONResponse
 
 # 必要なインポート
+from models.genius_api_model import GeniusApiModel
 from controllers.genius_api import search_songs_genius_api
 from utils.KeywordProvider import get_keyword
 
@@ -26,9 +28,14 @@ def get_song_list(
     keyword = get_keyword(artist, title)
 
     # Genius APIから曲リストを取得
-    song_info_list = search_songs_genius_api(keyword)
+    song_info_list: list[GeniusApiModel] = search_songs_genius_api(keyword)
+
+    # "Genius" を含むアーティストを除外
+    song_info_list = [song for song in song_info_list if "Genius" not in song.artist_name]
 
     if not song_info_list:
         raise HTTPException(status_code=404, detail="No songs found.")
 
-    return song_info_list
+    response = [song_info.to_dict() for song_info in song_info_list]
+
+    return JSONResponse(content=response, media_type="application/json; charset=utf-8")
