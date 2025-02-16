@@ -21,3 +21,12 @@ class GeniusApiModel:
             song_url=self.song_url,
             image_url=self.image_url,
         )
+
+    def to_dict(self):
+        return {
+            "artist_name": self.artist_name,
+            "track_name": self.track_name,
+            "similarity": self.similarity,
+            "image_url": self.image_url,
+            "song_url": self.song_url
+        }
