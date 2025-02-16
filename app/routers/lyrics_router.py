@@ -41,7 +41,7 @@ def search_lyrics(
     track_info.lyrics = get_lyrics_from_html(track_info.song_url)
 
     # データベースを更新
-    track_info = database_controller.insert_track_info(track_info)
+    track_info = database_controller.update_track_info(track_info)
     if not track_info:
         raise HTTPException(status_code=404, detail="No songs found.")
     track_search: TrackSearch = track_info.to_track_search(
@@ -72,7 +72,7 @@ def search_lyrics(
 
 @router.get("/url")
 def get_lyrics_song_url(
-    id: int= Query(..., description="TrackInfo ID"),
+    id: str= Query(..., description="TrackInfo ID"),
     artist: str = Query("", description="Artist Name"),
     title: str = Query("", description="Title"),
     image_url: str = Query("", description="Image Url"),
@@ -86,10 +86,11 @@ def get_lyrics_song_url(
 
     # データベース処理
     database_controller = DatabaseController()
+        
 
     # TrackInfo の作成・更新
     track_info = TrackInfo(
-        id=id,
+        id=int(id),
         artist_name=artist,
         track_name=title,
         image_url=image_url,
