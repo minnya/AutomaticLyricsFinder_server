@@ -1,3 +1,4 @@
+from functools import lru_cache
 import requests
 import os
 from models.genius_api_model import GeniusApiModel
@@ -11,6 +12,7 @@ API_URL = f"{GENIUS_API_BASE_URL}/search"
 HEADERS = {"Authorization": f"Bearer {GENIUS_ACCESS_TOKEN}"}
 
 # Genius APIにリクエストを送信して結果を取得（同期処理）
+@lru_cache(maxsize=128)  # キャッシュの最大サイズを指定
 def _request_api(keyword: str) -> list[GeniusApiModel]:
     search_query = {"q": keyword}
     response = requests.get(API_URL, headers=HEADERS, params=search_query)
