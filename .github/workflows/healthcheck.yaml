@@ -2,7 +2,7 @@ name: Check API Status
 
 on:
   schedule:
-    - cron: "0 6 * * * *"  # 1日1回実行
+    - cron: "0 6 * * *"  # 1日1回実行
   workflow_dispatch:  # 手動実行も可能
   
 jobs:
