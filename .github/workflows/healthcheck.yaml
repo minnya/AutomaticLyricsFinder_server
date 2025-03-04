@@ -18,3 +18,4 @@ jobs:
             exit 1
           else
             echo "API is running fine."
+          fi
