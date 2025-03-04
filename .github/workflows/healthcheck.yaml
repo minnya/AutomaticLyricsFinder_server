@@ -12,7 +12,7 @@ jobs:
       - name: APIをチェック
         id: check_api
         run: |
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -H "X-Api-Key: ${{ secrets.API_KEY }}" ${{ env.BASE_URL }}/search-lyrics?artist=justin%20bieber&title=baby)
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -H "X-Api-Key: ${{ secrets.API_KEY }}" ${{ vars.BASE_URL }}/search-lyrics?artist=justin%20bieber&title=baby)
           if [ "$RESPONSE" -ne 200 ]; then
             echo "::error title=API Check::Automatic Lyrics Server is down! Status: $RESPONSE"
             exit 1
